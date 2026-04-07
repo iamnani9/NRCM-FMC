@@ -3,7 +3,6 @@ import { Navbar } from './components/Navbar';
 import { Hero } from './components/Hero';
 import { About } from './components/About';
 import { Portfolio } from './components/Portfolio';
-import { VideoModal } from './components/VideoModal';
 import { Crew } from './components/Crew';
 import { Join } from './components/Join';
 import { Gallery } from './components/Gallery';
@@ -20,7 +19,6 @@ function App() {
             <Navbar />
             <Hero />
             <About />
-            <VideoModal/>
             <Portfolio />
             <Crew />
             <Gallery />
