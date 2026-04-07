@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Premium Admin Panel - NRCM Film Club</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
+            color: #fff;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        
+        h1 {
+            font-size: 2rem;
+            background: linear-gradient(135deg, #e6b800 0%, #ffd700 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .refresh-btn, .test-api-btn {
+            background: rgba(230, 184, 0, 0.2);
+            border: 1px solid #e6b800;
+            color: #e6b800;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-left: 10px;
+        }
+        
+        .refresh-btn:hover, .test-api-btn:hover {
+            background: #e6b800;
+            color: #000;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .stat-card {
+            background: rgba(255,255,255,0.05);
+            backdrop-filter: blur(10px);
+            padding: 25px;
+            border-radius: 12px;
+            border: 1px solid rgba(230, 184, 0, 0.2);
+            transition: transform 0.3s ease;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+            border-color: #e6b800;
+        }
+        
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #e6b800;
+            margin-bottom: 10px;
+        }
+        
+        .stat-label {
+            color: #888;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .filters {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .filter-btn {
+            background: rgba(255,255,255,0.05);
+            border: none;
+            color: #fff;
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .filter-btn.active {
+            background: #e6b800;
+            color: #000;
+        }
+        
+        .applications-grid {
+            display: grid;
+            gap: 20px;
+        }
+        
+        .application-card {
+            background: rgba(255,255,255,0.05);
+            border-radius: 12px;
+            padding: 20px;
+            border-left: 4px solid #e6b800;
+            transition: all 0.3s ease;
+        }
+        
+        .application-card:hover {
+            transform: translateX(5px);
+            background: rgba(255,255,255,0.08);
+        }
+        
+        .app-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        .app-name {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #e6b800;
+        }
+        
+        .app-date {
+            color: #888;
+            font-size: 0.85rem;
+        }
+        
+        .app-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+            margin: 15px 0;
+        }
+        
+        .detail-item {
+            background: rgba(0,0,0,0.3);
+            padding: 10px;
+            border-radius: 6px;
+        }
+        
+        .detail-label {
+            font-size: 0.75rem;
+            color: #888;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .detail-value {
+            margin-top: 5px;
+            font-weight: 500;
+        }
+        
+        .reason-box {
+            background: rgba(0,0,0,0.3);
+            padding: 15px;
+            border-radius: 6px;
+            margin: 15px 0;
+        }
+        
+        .status-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+        
+        .status-pending { background: #ff9800; color: #000; }
+        .status-approved { background: #4caf50; color: #fff; }
+        .status-rejected { background: #f44336; color: #fff; }
+        
+        .status-select {
+            background: rgba(255,255,255,0.1);
+            border: 1px solid #e6b800;
+            color: #fff;
+            padding: 6px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+        
+        .delete-btn {
+            background: rgba(244, 67, 54, 0.2);
+            border: 1px solid #f44336;
+            color: #f44336;
+            padding: 6px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .delete-btn:hover {
+            background: #f44336;
+            color: #fff;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #e6b800;
+        }
+        
+        .error-message {
+            background: rgba(244, 67, 54, 0.2);
+            border: 1px solid #f44336;
+            color: #f44336;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            text-align: center;
+        }
+        
+        .success-message {
+            background: rgba(76, 175, 80, 0.2);
+            border: 1px solid #4caf50;
+            color: #4caf50;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            text-align: center;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .spinner {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            border: 3px solid rgba(230, 184, 0, 0.3);
+            border-radius: 50%;
+            border-top-color: #e6b800;
+            animation: spin 1s linear infinite;
+        }
+        
+        @media (max-width: 768px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .app-header {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎬 NRCM Film Club - Premium Admin Panel</h1>
+            <div>
+                <button class="test-api-btn" onclick="testAPI()">🔍 Test API</button>
+                <button class="refresh-btn" onclick="fetchData()">🔄 Refresh Data</button>
+            </div>
+        </div>
+        
+        <div id="apiStatus"></div>
+        <div id="stats" class="stats-grid"></div>
+        
+        <div class="filters" id="filters">
+            <button class="filter-btn active" onclick="filterApplications('all')">All</button>
+            <button class="filter-btn" onclick="filterApplications('pending')">⏳ Pending</button>
+            <button class="filter-btn" onclick="filterApplications('approved')">✅ Approved</button>
+            <button class="filter-btn" onclick="filterApplications('rejected')">❌ Rejected</button>
+        </div>
+        
+        <div id="applications" class="applications-grid"></div>
+    </div>
+
+    <script>
+        let allApplications = [];
+        let currentFilter = 'all';
+        const API_URL = 'http://localhost:5000';
+        
+        async function testAPI() {
+            const statusDiv = document.getElementById('apiStatus');
+            statusDiv.innerHTML = '<div class="loading">Testing API connection...</div>';
+            
+            try {
+                const response = await fetch(`${API_URL}/api/applications`);
+                if (response.ok) {
+                    const data = await response.json();
+                    statusDiv.innerHTML = `<div class="success-message">✅ API is working! Found ${data.applications?.length || 0} applications.</div>`;
+                    setTimeout(() => {
+                        statusDiv.innerHTML = '';
+                    }, 3000);
+                } else {
+                    throw new Error(`HTTP ${response.status}`);
+                }
+            } catch (error) {
+                statusDiv.innerHTML = `<div class="error-message">❌ Cannot connect to API. Make sure server is running on ${API_URL}. Error: ${error.message}</div>`;
+            }
+        }
+        
+        async function fetchData() {
+            document.getElementById('applications').innerHTML = '<div class="loading"><div class="spinner"></div><p>Loading applications...</p></div>';
+            
+            try {
+                const [appsRes, statsRes] = await Promise.all([
+                    fetch(`${API_URL}/api/applications`),
+                    fetch(`${API_URL}/api/stats`)
+                ]);
+                
+                if (!appsRes.ok) {
+                    throw new Error(`HTTP ${appsRes.status}`);
+                }
+                
+                const appsData = await appsRes.json();
+                const statsData = await statsRes.json();
+                
+                if (appsData.success) {
+                    allApplications = appsData.applications;
+                    renderApplications();
+                    console.log('Loaded applications:', allApplications.length);
+                    if (allApplications.length > 0) {
+                        console.log('First application ID:', allApplications[0].id);
+                    }
+                } else {
+                    throw new Error('Failed to load applications');
+                }
+                
+                if (statsData.success) {
+                    renderStats(statsData.stats);
+                }
+            } catch (error) {
+                console.error('Error fetching data:', error);
+                document.getElementById('applications').innerHTML = `<div class="error-message">❌ Failed to load applications. Make sure server is running on ${API_URL}. Error: ${error.message}</div>`;
+            }
+        }
+        
+        function renderStats(stats) {
+            document.getElementById('stats').innerHTML = `
+                <div class="stat-card">
+                    <div class="stat-number">${stats.total}</div>
+                    <div class="stat-label">Total Applications</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">${stats.pending}</div>
+                    <div class="stat-label">Pending Review</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">${stats.approved}</div>
+                    <div class="stat-label">Approved</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">${stats.rejected}</div>
+                    <div class="stat-label">Rejected</div>
+                </div>
+            `;
+        }
+        
+        function filterApplications(filter) {
+            currentFilter = filter;
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.textContent.toLowerCase().includes(filter) || 
+                    (filter === 'all' && btn.textContent === 'All')) {
+                    btn.classList.add('active');
+                }
+            });
+            renderApplications();
+        }
+        
+        function renderApplications() {
+            let filtered = allApplications;
+            if (currentFilter !== 'all') {
+                filtered = allApplications.filter(app => app.status === currentFilter);
+            }
+            
+            if (filtered.length === 0) {
+                document.getElementById('applications').innerHTML = '<div class="loading">📭 No applications found</div>';
+                return;
+            }
+            
+            document.getElementById('applications').innerHTML = filtered.map(app => {
+                // Make sure app.id exists
+                const appId = app.id || app._id;
+                if (!appId) {
+                    console.error('Application missing ID:', app);
+                    return '';
+                }
+                
+                return `
+                <div class="application-card" data-app-id="${appId}">
+                    <div class="app-header">
+                        <div class="app-name">${escapeHtml(app.fullName)}</div>
+                        <div class="app-date">📅 ${new Date(app.createdAt).toLocaleString()}</div>
+                    </div>
+                    <div class="app-details">
+                        <div class="detail-item">
+                            <div class="detail-label">📧 Email</div>
+                            <div class="detail-value">${escapeHtml(app.email)}</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">🎓 Year & Branch</div>
+                            <div class="detail-value">${app.year} - ${app.branch}</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">📚 Section</div>
+                            <div class="detail-value">${app.section}</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">🎭 Role</div>
+                            <div class="detail-value">${app.role}</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">🆔 Application ID</div>
+                            <div class="detail-value"><code>${appId}</code></div>
+                        </div>
+                    </div>
+                    <div class="reason-box">
+                        <div class="detail-label">💭 Why join?</div>
+                        <div class="detail-value">${escapeHtml(app.reason)}</div>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap;">
+                        <select class="status-select" onchange="updateStatus('${appId}', this.value)">
+                            <option value="pending" ${app.status === 'pending' ? 'selected' : ''}>⏳ Pending</option>
+                            <option value="approved" ${app.status === 'approved' ? 'selected' : ''}>✅ Approved</option>
+                            <option value="rejected" ${app.status === 'rejected' ? 'selected' : ''}>❌ Rejected</option>
+                        </select>
+                        <div style="display: flex; gap: 10px; align-items: center;">
+                            <span class="status-badge status-${app.status}">${app.status.toUpperCase()}</span>
+                            <button class="delete-btn" onclick="deleteApplication('${appId}')">🗑️ Delete</button>
+                        </div>
+                    </div>
+                </div>
+            `}).join('');
+        }
+        
+        async function updateStatus(id, status) {
+            console.log(`Updating application ${id} to status: ${status}`);
+            
+            if (!id || id === 'undefined') {
+                console.error('Invalid application ID:', id);
+                alert('Error: Invalid application ID. Please refresh the page and try again.');
+                return;
+            }
+            
+            try {
+                const response = await fetch(`${API_URL}/api/applications/${id}/status`, {
+                    method: 'PUT',
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify({ status: status })
+                });
+                
+                const data = await response.json();
+                console.log('Update response:', data);
+                
+                if (data.success) {
+                    // Show success message on the card
+                    const card = document.querySelector(`.application-card[data-app-id="${id}"]`);
+                    if (card) {
+                        const tempMsg = document.createElement('div');
+                        tempMsg.className = 'success-message';
+                        tempMsg.textContent = `✅ Status updated to ${status.toUpperCase()}!`;
+                        tempMsg.style.margin = '10px 0';
+                        tempMsg.style.padding = '10px';
+                        tempMsg.style.fontSize = '14px';
+                        card.insertBefore(tempMsg, card.firstChild);
+                        setTimeout(() => tempMsg.remove(), 3000);
+                    }
+                    
+                    // Refresh data after 1 second
+                    setTimeout(() => {
+                        fetchData();
+                    }, 1000);
+                } else {
+                    alert('Failed to update status: ' + (data.message || 'Unknown error'));
+                }
+            } catch (error) {
+                console.error('Error updating status:', error);
+                alert(`Error updating status: ${error.message}\n\nMake sure server is running on ${API_URL}`);
+            }
+        }
+        
+        async function deleteApplication(id) {
+            if (!id || id === 'undefined') {
+                alert('Error: Invalid application ID');
+                return;
+            }
+            
+            if (confirm('Are you sure you want to delete this application? This action cannot be undone.')) {
+                try {
+                    const response = await fetch(`${API_URL}/api/applications/${id}`, {
+                        method: 'DELETE'
+                    });
+                    const data = await response.json();
+                    
+                    if (data.success) {
+                        alert('Application deleted successfully!');
+                        await fetchData();
+                    } else {
+                        alert('Failed to delete application');
+                    }
+                } catch (error) {
+                    console.error('Error deleting application:', error);
+                    alert(`Error deleting application: ${error.message}`);
+                }
+            }
+        }
+        
+        function escapeHtml(str) {
+            if (!str) return '';
+            return str.replace(/[&<>]/g, function(m) {
+                if (m === '&') return '&amp;';
+                if (m === '<') return '&lt;';
+                if (m === '>') return '&gt;';
+                return m;
+            });
+        }
+        
+        // Load data when page opens
+        testAPI();
+        fetchData();
+        
+        // Auto-refresh every 30 seconds
+        setInterval(fetchData, 30000);
+    </script>
+</body>
+</html>

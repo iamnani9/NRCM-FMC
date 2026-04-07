@@ -1,0 +1,134 @@
+.portfolio-section {
+  padding: 120px 24px;
+  background-color: var(--color-surface);
+}
+
+.portfolio-container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.portfolio-header {
+  text-align: center;
+  margin-bottom: 64px;
+}
+
+.portfolio-subtitle {
+  color: var(--color-text-muted);
+  font-size: 1.1rem;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.portfolio-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 32px;
+}
+
+.portfolio-card {
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.portfolio-image {
+  height: 450px;
+  background-size: cover;
+  background-position: center;
+  position: relative;
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.portfolio-card:hover .portfolio-image {
+  transform: scale(1.05);
+}
+
+.portfolio-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.2) 50%, rgba(0,0,0,0.1) 100%);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 32px;
+  opacity: 0.8;
+  transition: all 0.4s ease;
+}
+
+.portfolio-card:hover .portfolio-overlay {
+  opacity: 1;
+  background: linear-gradient(to top, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.4) 50%, rgba(0,0,0,0.2) 100%);
+}
+
+.play-btn {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0.8);
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(5px);
+  border: 1px solid rgba(255,255,255,0.2);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  cursor: pointer;
+}
+
+.portfolio-card:hover .play-btn {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+}
+
+.play-btn:hover {
+  background: var(--color-primary);
+  color: #000;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 20px var(--color-primary-glow);
+}
+
+.portfolio-info {
+  transform: translateY(20px);
+  transition: transform 0.4s ease;
+}
+
+.portfolio-card:hover .portfolio-info {
+  transform: translateY(0);
+}
+
+.portfolio-category {
+  display: inline-block;
+  font-family: var(--font-heading);
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: var(--color-primary);
+  margin-bottom: 8px;
+}
+
+.portfolio-title {
+  font-size: 2rem;
+  margin-bottom: 4px;
+}
+
+.portfolio-director {
+  color: var(--color-text-muted);
+  font-size: 0.95rem;
+}
+
+.portfolio-footer {
+  text-align: center;
+  margin-top: 64px;
+}
+
+@media (max-width: 768px) {
+  .portfolio-image {
+    height: 350px;
+  }
+}
