@@ -1,11 +1,7 @@
 import { Play, ArrowRight } from 'lucide-react';
-import { useState } from 'react'; // ADD THIS
-import { VideoModal } from './VideoModal'; // ADD THIS
 import './Hero.css';
 
 export function Hero() {
-  const [isVideoOpen, setIsVideoOpen] = useState(false); // ADD THIS
-
   return (
     <section id="hero" className="hero">
       <div className="hero-overlay"></div>
@@ -32,10 +28,6 @@ export function Hero() {
           <a 
             href="#portfolio" 
             className="btn-primary"
-            onClick={(e) => {
-              e.preventDefault(); // ADD THIS - prevents page jump
-              setIsVideoOpen(true); // ADD THIS - opens video modal
-            }}
           >
             <Play size={20} className="icon-left" />
             Watch Showreel
@@ -46,9 +38,6 @@ export function Hero() {
           </a>
         </div>
       </div>
-
-      {/* ADD THIS - Video Modal */}
-      <VideoModal isOpen={isVideoOpen} onClose={() => setIsVideoOpen(false)} />
     </section>
   );
 }
